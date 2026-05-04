@@ -1,0 +1,11 @@
+Elasticsearch:
+  host: ${ES_HOST}
+  index: ${ES_INDEX}
+
+server:
+  port: ${SERVER_PORT}
+
+search:
+  min_chars: ${SEARCH_MIN_CHARS}
+  fuzziness: ${SEARCH_FUZZINESS}
+  max_results: ${SEARCH_MAX_RESULTS}

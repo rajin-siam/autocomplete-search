@@ -1,0 +1,22 @@
+services:
+  elasticsearch:
+    image: elasticsearch:9.3.3
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+
+  app:
+    build: .
+    ports:
+      - "2322:2322"
+    env_file:
+      - .env
+    depends_on:
+      - elasticsearch
+
+volumes:
+  es-data:
