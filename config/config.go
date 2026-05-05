@@ -44,6 +44,10 @@ func Load() (*Config, error) {
 	viper.BindEnv("search.min_chars", "SEARCH_MIN_CHARS")
 	viper.BindEnv("search.fuzziness", "SEARCH_FUZZINESS")
 	viper.BindEnv("search.max_results", "SEARCH_MAX_RESULTS")
+	viper.BindEnv("database.host", "DATABASE_HOST")
+	viper.BindEnv("database.port", "DATABASE_PORT")
+	viper.BindEnv("database.name", "DATABASE_NAME")
+	viper.BindEnv("database.user", "DATABASE_USER")
 	viper.BindEnv("database.password", "DATABASE_PASSWORD")
 
 	if err := viper.ReadInConfig(); err != nil {
