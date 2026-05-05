@@ -1,11 +1,18 @@
-Elasticsearch:
-  host: ${ES_HOST}
-  index: ${ES_INDEX}
+elasticsearch:
+  host: http://localhost:9200
+  index: places
 
 server:
-  port: ${SERVER_PORT}
+  port: 2322
 
 search:
-  min_chars: ${SEARCH_MIN_CHARS}
-  fuzziness: ${SEARCH_FUZZINESS}
-  max_results: ${SEARCH_MAX_RESULTS}
+  min_chars: 2
+  fuzziness: AUTO
+  max_results: 15
+
+database:
+  host: localhost
+  port: 5432
+  name: nominatim
+  user: nominatim
+  password: ""
