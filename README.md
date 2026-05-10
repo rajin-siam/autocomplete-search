@@ -242,6 +242,72 @@ Queries use a `bool/should` strategy combining two clauses:
 
 Documents matching both clauses score higher, so exact/prefix matches naturally rank above fuzzy ones.
 
+## Testing
+
+This project includes comprehensive testing with **100% coverage** for the service layer and integration tests for the HTTP API.
+
+### Unit Tests
+
+```bash
+# Run all unit tests
+make test-unit
+
+# Run with coverage
+make test-coverage-func
+
+# Generate HTML coverage report
+make test-coverage-html
+```
+
+**Unit Test Statistics:**
+- 18 unit tests (all passing)
+- 100% code coverage on service layer
+- Tests for SearchService and IndexingService
+- Comprehensive error handling and edge case coverage
+
+### Integration Tests
+
+```bash
+# Verify setup (Docker required)
+./tests/integration/verify_setup.sh
+
+# Run all integration tests
+make test-integration
+
+# Run specific test
+go test -v -tags=integration -run TestAPI_Search_ExactMatch ./tests/integration/
+```
+
+**Integration Test Statistics:**
+- 11 integration tests (HTTP API + Elasticsearch)
+- Tests complete request-response flow
+- Uses real Elasticsearch via testcontainers
+- Tests fuzzy matching, autocomplete, validation
+- Validates GeoJSON format
+
+**Prerequisites for Integration Tests:**
+- Docker installed and running
+- Internet connection (first run only, to pull Elasticsearch image)
+
+### All Tests
+
+```bash
+# Run all tests (unit + integration)
+make test && make test-integration
+```
+
+**Total Test Coverage:**
+- 29 tests total (18 unit + 11 integration)
+- Service layer: 100% coverage
+- HTTP API: Comprehensive integration coverage
+- Elasticsearch: Real search behavior tested
+
+**Documentation:**
+- See [TESTING.md](TESTING.md) for unit testing guide
+- See [TESTS_QUICKSTART.md](TESTS_QUICKSTART.md) for quick reference
+- See [tests/integration/README.md](tests/integration/README.md) for integration testing guide
+- See [INTEGRATION_TESTS_SUMMARY.md](INTEGRATION_TESTS_SUMMARY.md) for implementation details
+
 ## Development
 
 ```bash
@@ -249,7 +315,10 @@ Documents matching both clauses score higher, so exact/prefix matches naturally 
 go mod download
 
 # Run tests
-go test ./...
+make test
+
+# Run tests with coverage
+make test-coverage
 
 # Build binary
 go build -o place-search main.go
