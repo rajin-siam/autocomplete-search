@@ -1,0 +1,16 @@
+# Binary
+place-search
+
+# Environment & secrets
+.env
+config.yaml
+
+# Go
+vendor/
+
+# IDE
+.idea/
+
+# OS
+.DS_Store
+.idea

@@ -1,22 +1,20 @@
 services:
-  elasticsearch:
-    image: elasticsearch:9.3.3
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-    ports:
-      - "9200:9200"
-    volumes:
-      - es-data:/usr/share/elasticsearch/data
 
   app:
     build: .
+    command: ["./place-search", "serve"]
     ports:
       - "2322:2322"
-    env_file:
-      - .env
-    depends_on:
-      - elasticsearch
+    environment:
+      - ES_HOST=http://elasticsearch:9200
+      - ES_INDEX=places
+      - SERVER_PORT=2322
+      - SEARCH_MIN_CHARS=2
+      - SEARCH_FUZZINESS=AUTO
+      - SEARCH_MAX_RESULTS=15
+    networks:
+      - elastic-net
 
-volumes:
-  es-data:
+networks:
+  elastic-net:
+    external: true

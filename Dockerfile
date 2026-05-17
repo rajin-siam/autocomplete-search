@@ -3,12 +3,11 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN go build -o place-search ./cmd/main.go
+RUN go build -o place-search main.go
 
 FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/place-search .
 COPY config.yaml .
-COPY .env .
 EXPOSE 2322
-CMD ["./place-search"]
+CMD ["./place-search", "serve"]

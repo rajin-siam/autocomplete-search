@@ -11,19 +11,12 @@ import (
 )
 
 type PlaceRepository struct {
-	client     *elasticsearch.Client
-	index      string
-	fuzziness  string
-	maxResults int
+	client *elasticsearch.Client
+	index  string
 }
 
-func NewPlaceRepository(client *elasticsearch.Client, index, fuzziness string, maxResults int) *PlaceRepository {
-	return &PlaceRepository{
-		client:     client,
-		index:      index,
-		fuzziness:  fuzziness,
-		maxResults: maxResults,
-	}
+func NewPlaceRepository(client *elasticsearch.Client, index string) *PlaceRepository {
+	return &PlaceRepository{client: client, index: index}
 }
 
 type esResponse struct {
@@ -34,28 +27,33 @@ type esResponse struct {
 	} `json:"hits"`
 }
 
-type esSource struct {
-	Name        string             `json:"name"`
-	OsmID       int64              `json:"osm_id"`
-	OsmType     string             `json:"osm_type"`
-	OsmKey      string             `json:"osm_key"`
-	OsmValue    string             `json:"osm_value"`
-	Type        string             `json:"type"`
-	Country     string             `json:"country"`
-	CountryCode string             `json:"countrycode"`
-	State       string             `json:"state"`
-	County      string             `json:"county"`
-	City        string             `json:"city"`
-	District    string             `json:"district"`
-	Locality    string             `json:"locality"`
-	Street      string             `json:"street"`
-	Postcode    string             `json:"postcode"`
-	Coordinate  domain.Coordinate  `json:"coordinate"`
-	Extent      []float64          `json:"extent"`
+type esCoordinate struct {
+	Lat float64 `json:"lat"`
+	Lon float64 `json:"lon"`
 }
 
-func (r *PlaceRepository) Search(ctx context.Context, q domain.SearchQuery) ([]domain.Place, error) {
-	body, err := buildQuery(q, r.fuzziness, r.maxResults)
+type esSource struct {
+	Name        string       `json:"name"`
+	OsmID       int64        `json:"osm_id"`
+	OsmType     string       `json:"osm_type"`
+	OsmKey      string       `json:"osm_key"`
+	OsmValue    string       `json:"osm_value"`
+	Type        string       `json:"type"`
+	Country     string       `json:"country"`
+	CountryCode string       `json:"countrycode"`
+	State       string       `json:"state"`
+	County      string       `json:"county"`
+	City        string       `json:"city"`
+	District    string       `json:"district"`
+	Locality    string       `json:"locality"`
+	Street      string       `json:"street"`
+	Postcode    string       `json:"postcode"`
+	Coordinate  esCoordinate `json:"coordinate"`
+	Extent      []float64    `json:"extent"`
+}
+
+func (r *PlaceRepository) Search(ctx context.Context, query, fuzziness string, maxResults int) ([]domain.Place, error) {
+	body, err := buildQuery(query, fuzziness, maxResults)
 	if err != nil {
 		return nil, err
 	}
@@ -98,8 +96,11 @@ func (r *PlaceRepository) Search(ctx context.Context, q domain.SearchQuery) ([]d
 			Locality:    s.Locality,
 			Street:      s.Street,
 			Postcode:    s.Postcode,
-			Coordinate:  s.Coordinate,
-			Extent:      s.Extent,
+			Coordinate: domain.Coordinate{
+				Lat: s.Coordinate.Lat,
+				Lon: s.Coordinate.Lon,
+			},
+			Extent: s.Extent,
 		})
 	}
 
