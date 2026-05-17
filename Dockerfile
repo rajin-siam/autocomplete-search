@@ -1,9 +1,9 @@
-FROM golang:1.21-alpine AS builder
+FROM golang:1.26-alpine AS builder
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN go build -o place-search ./cmd/place-search/main.go
+RUN go build -o place-search main.go
 
 FROM alpine:latest
 WORKDIR /app
